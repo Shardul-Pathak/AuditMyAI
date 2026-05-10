@@ -10,13 +10,14 @@ import {
 } from '@/utils/storage'
 
 export function useAuditForm() {
-  const [mounted,   setMounted]   = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [loading,   setLoading]   = useState(false)
-  const [progress,  setProgress]  = useState(0)
-  const [data,      setData]      = useState<FormData>(INITIAL_DATA)
+  const persisted = typeof window !== 'undefined' ? loadAuditForm() : null
+  const mounted = typeof window !== 'undefined' ? true : false
+  const [submitted, setSubmitted] = useState(persisted?.submitted ?? false)
+  const [loading, setLoading] = useState(persisted?.loading ?? false)
+  const [progress, setProgress] = useState(typeof persisted?.progress === 'number' ? persisted.progress : 0)
+  const [data, setData] = useState<FormData>(persisted?.data ?? INITIAL_DATA)
   const [saveStatus, setSaveStatus] = useState<'Saved' | 'Saving...' | null>(null)
-  const [lastSaved,  setLastSaved]  = useState<number | null>(null)
+  const [lastSaved, setLastSaved] = useState<number | null>(persisted?.lastSaved ?? persisted?.timestamp ?? null)
 
   const saveTimerRef          = useRef<number | null>(null)
   const lastProgressSaveRef   = useRef<number>(0)
@@ -24,18 +25,8 @@ export function useAuditForm() {
 
   // Hydrate from storage
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const persisted = loadAuditForm()
-    if (persisted) {
-      setData(persisted.data)
-      setLoading(persisted.loading)
-      setSubmitted(persisted.submitted)
-      setProgress(typeof persisted.progress === 'number' ? persisted.progress : 0)
-      setLastSaved(persisted.lastSaved ?? persisted.timestamp)
-    }
-    setMounted(true)
-    mountedRef.current = true
-  }, [])
+  mountedRef.current = true
+}, [])
 
   // Autosave (debounced)
   useEffect(() => {

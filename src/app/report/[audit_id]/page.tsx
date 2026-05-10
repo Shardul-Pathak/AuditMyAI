@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import ReportHeader from '@/components/report/ReportHeader'
 import PdfViewer from '@/components/report/PdfViewer'
 import LeadCaptureForm from '@/components/report/LeadCaptureForm'
@@ -22,7 +23,7 @@ export default function AuditReportPage() {
       <nav className="border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="Audit My AI" className="h-8 w-8 rounded-md object-contain" />
+            <Image src="/logo.png" alt="Audit My AI" className="h-8 w-8 rounded-md object-contain" width={32} height={32} />
             <p className="text-sm font-semibold text-slate-800">Audit My AI Report</p>
           </div>
           <Link
@@ -119,7 +120,7 @@ export default function AuditReportPage() {
       <footer className="border-t border-slate-200 bg-white mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="Audit My AI" className="h-7 w-7 rounded-md object-contain" />
+            <Image src="/logo.png" alt="Audit My AI" className="h-7 w-7 rounded-md object-contain" width={28} height={28} />
             <p className="text-sm text-slate-500">Need to start a new audit?</p>
           </div>
           <Link

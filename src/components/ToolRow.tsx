@@ -4,13 +4,12 @@ import { FieldLabel, Input, Select } from './AuditFormFields'
 
 type Props = {
   tool: ToolEntry
-  index: number
   showRemove: boolean
   onUpdate: (field: keyof ToolEntry, value: string) => void
   onRemove: () => void
 }
 
-export default function ToolRow({ tool, index, showRemove, onUpdate, onRemove }: Props) {
+export default function ToolRow({ tool, showRemove, onUpdate, onRemove }: Props) {
   return (
     <div className="rounded-3xl border border-slate-200 p-5 bg-slate-50/70">
       <div className="grid md:grid-cols-2 gap-4">

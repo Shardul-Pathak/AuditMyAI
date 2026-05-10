@@ -23,7 +23,7 @@ export type PersistedAuditState = {
 }
 
 const STORAGE_KEY = 'audit-form-state'
-const EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+const EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000
 
 function isExpired(ts: number) {
     return Date.now() - ts > EXPIRATION_MS
@@ -36,8 +36,6 @@ export function saveAuditForm(state: PersistedAuditState): void {
         const payload = JSON.stringify(state)
         localStorage.setItem(STORAGE_KEY, payload)
     } catch (err) {
-        // swallow write errors in production
-        // eslint-disable-next-line no-console
         console.error('saveAuditForm error', err)
     }
 }
@@ -60,7 +58,6 @@ export function loadAuditForm(): PersistedAuditState | null {
 
         return parsed
     } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('loadAuditForm error', err)
         return null
     }
@@ -71,7 +68,6 @@ export function clearAuditForm(): void {
         if (typeof window === 'undefined') return
         localStorage.removeItem(STORAGE_KEY)
     } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('clearAuditForm error', err)
     }
 }

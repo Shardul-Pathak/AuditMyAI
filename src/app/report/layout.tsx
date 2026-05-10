@@ -1,5 +1,3 @@
-import type { Metadata } from 'next'
-
 export const metadata = {
   title: 'AI Spend Audit Report',
   description:

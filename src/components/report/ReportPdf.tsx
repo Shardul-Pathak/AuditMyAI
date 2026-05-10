@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 
 interface ReportData {
   company: string
@@ -110,7 +112,7 @@ function Page1() {
       <div className="flex items-center justify-between mb-12">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-brand/5 border border-brand/30 rounded-lg flex items-center justify-center font-bold text-lg">
-            <img src="/logo.png" alt="Audit My AI Logo" className="w-10 h-10" />
+            <Image src="/logo.png" alt="Audit My AI Logo" className="w-10 h-10" width={40} height={40} />
           </div>
           <div>
             <div className="font-bold text-lg">Audit My AI</div>

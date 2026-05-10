@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import Image from 'next/image'
 
 const NAV_LINKS = ['How It Works', 'Savings', 'FAQ']
 
@@ -11,9 +12,7 @@ function toAnchor(label: string) {
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => { setMounted(true) }, [])
+  const mounted = typeof window !== 'undefined'
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
@@ -80,7 +79,7 @@ export default function Navbar() {
 
             <div className="flex items-center gap-3 shrink-0">
               <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-brand/10 border border-brand/10 shrink-0">
-                <img src="/logo.png" alt="Audit My AI" className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
+                <Image src="/logo.png" alt="Audit My AI" className="w-6 h-6 sm:w-8 sm:h-8 object-contain" width={24} height={24} />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-base sm:text-lg font-semibold tracking-tight text-slate-950">Audit My AI</span>

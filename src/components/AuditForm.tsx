@@ -37,7 +37,6 @@ export default function AuditForm() {
           <ToolRow
             key={index}
             tool={tool}
-            index={index}
             showRemove={data.tools.length > 1}
             onUpdate={(field, value) => updateTool(index, field, value)}
             onRemove={() => removeTool(index)}
