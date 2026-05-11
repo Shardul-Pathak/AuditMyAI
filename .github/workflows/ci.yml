@@ -23,6 +23,9 @@ jobs:
 
     timeout-minutes: 15
 
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/auditmyai"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,7 +46,7 @@ jobs:
 
       - name: Generate Prisma Client
         run: pnpm prisma generate
-        
+
       - name: Run linter
         run: pnpm lint
 
