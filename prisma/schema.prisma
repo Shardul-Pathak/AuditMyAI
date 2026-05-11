@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AiTool {
+  CURSOR
+  GITHUB_COPILOT
+  CLAUDE
+  CHATGPT
+  ANTHROPIC_API
+  OPENAI_API
+  GEMINI
+  WINDSURF
+  V0
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  TEAM
+  BUSINESS
+  ENTERPRISE
+  CUSTOM
+  PAY_AS_YOU_GO
+}
+
+enum RecommendationType {
+  DOWNGRADE          // Move to lower tier
+  UPGRADE            // Move to higher tier (better value)
+  SWITCH_TOOL        // Replace with cheaper alternative
+  CONSOLIDATE        // Merge overlapping subscriptions
+  SWITCH_TO_API      // Consumer → API (high usage)
+  SWITCH_TO_CONSUMER // API → Consumer plan (low usage)
+  OPTIMAL            // No change recommended
+}
+
+enum PricingUnit {
+  PER_SEAT_MONTHLY
+  FLAT_MONTHLY
+  PER_TOKEN
+  PER_REQUEST
+  CREDIT_BASED
+}
+
+enum UseCase {
+  CODE_GENERATION
+  CONTENT_WRITING
+  DATA_ANALYSIS
+  CUSTOMER_SUPPORT
+  RESEARCH
+  GENERAL_PRODUCTIVITY
+  MIXED
+}
+
+model AuditReport {
+  id                  String   @id @default(cuid())
+  publicId            String   @unique @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  totalMonthlySpend   Decimal  @db.Decimal(10, 2)
+  totalMonthlySavings Decimal  @db.Decimal(10, 2)
+  totalAnnualSavings  Decimal  @db.Decimal(10, 2)
+  teamSize            Int      @default(1)
+  primaryUseCase      UseCase  @default(MIXED)
+  summary             String   @db.Text
+  auditScore          Int
+  leadId              String?
+  lead                Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  auditItems          AuditItem[]
+  @@index([publicId])
+  @@index([createdAt])
+  @@index([leadId])
+  @@index([auditScore])
+}
+
+model AuditItem {
+  id                      String             @id @default(cuid())
+  createdAt               DateTime           @default(now())
+  toolName                AiTool
+  currentPlan             PlanTier
+  recommendedPlan         PlanTier
+  currentMonthlyCost      Decimal            @db.Decimal(10, 2)
+  recommendedMonthlyCost  Decimal            @db.Decimal(10, 2)
+  monthlySavings          Decimal            @db.Decimal(10, 2)
+  annualSavings           Decimal            @db.Decimal(10, 2)
+  recommendationType      RecommendationType
+  reasoning               String             @db.Text
+  confidenceScore         Float
+  reportId                String
+  report                  AuditReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  @@index([reportId])
+  @@index([toolName])
+  @@index([recommendationType])
+}
+
+model Lead {
+  id                String       @id @default(cuid())
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  email             String       @unique
+  companyName       String?
+  role              String?
+  estimatedTeamSize Int?
+  reports           AuditReport[]
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model PricingSnapshot {
+  id           String      @id @default(cuid())
+  createdAt    DateTime    @default(now())
+  vendor       AiTool
+  plan         PlanTier
+  monthlyPrice Decimal     @db.Decimal(10, 4)
+  pricingUnit  PricingUnit
+  sourceUrl    String?
+  verifiedAt   DateTime
+  @@unique([vendor, plan, verifiedAt])
+  @@index([vendor, plan])
+  @@index([verifiedAt])
+}
+
+model RateLimitEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  ipHash    String
+  endpoint  String
+  @@index([ipHash, endpoint, createdAt])
+  @@index([createdAt])
+}

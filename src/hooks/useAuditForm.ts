@@ -11,7 +11,7 @@ import {
 
 export function useAuditForm() {
   const persisted = typeof window !== 'undefined' ? loadAuditForm() : null
-  const mounted = typeof window !== 'undefined' ? true : false
+  const [mounted, setMounted] = useState(false)
   const [submitted, setSubmitted] = useState(persisted?.submitted ?? false)
   const [loading, setLoading] = useState(persisted?.loading ?? false)
   const [progress, setProgress] = useState(typeof persisted?.progress === 'number' ? persisted.progress : 0)
@@ -19,14 +19,15 @@ export function useAuditForm() {
   const [saveStatus, setSaveStatus] = useState<'Saved' | 'Saving...' | null>(null)
   const [lastSaved, setLastSaved] = useState<number | null>(persisted?.lastSaved ?? persisted?.timestamp ?? null)
 
-  const saveTimerRef          = useRef<number | null>(null)
-  const lastProgressSaveRef   = useRef<number>(0)
-  const mountedRef            = useRef(false)
+  const saveTimerRef = useRef<number | null>(null)
+  const lastProgressSaveRef = useRef<number>(0)
+  const mountedRef = useRef(false)
 
   // Hydrate from storage
   useEffect(() => {
-  mountedRef.current = true
-}, [])
+    mountedRef.current = true
+    setMounted(true)
+  }, [])
 
   // Autosave (debounced)
   useEffect(() => {

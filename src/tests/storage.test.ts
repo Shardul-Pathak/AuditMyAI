@@ -4,7 +4,7 @@ import {
   clearAuditForm,
   loadAuditForm,
   saveAuditForm,
-} from './storage'
+} from '../utils/storage'
 
 const mockState = {
   data: {
