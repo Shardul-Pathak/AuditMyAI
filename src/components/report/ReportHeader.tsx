@@ -1,11 +1,13 @@
 type Props = {
   savings: number
   annualSavings: number
+  wasteReduction: number
   onShare: () => void
   onGetMail: () => void
+  onDownload?: () => void
 }
 
-export default function ReportHeader({ savings, annualSavings, onShare, onGetMail }: Props) {
+export default function ReportHeader({ savings, annualSavings, wasteReduction, onShare, onGetMail, onDownload }: Props) {
   return (
     <section className="border-b border-slate-200 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
@@ -40,7 +42,7 @@ export default function ReportHeader({ savings, annualSavings, onShare, onGetMai
               </div>
               <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
                 <p className="text-xs text-emerald-100">Waste Reduction</p>
-                <p className="text-xl font-bold">28%</p>
+                <p className="text-xl font-bold">{wasteReduction.toFixed(1)}%</p>
               </div>
             </div>
           </div>

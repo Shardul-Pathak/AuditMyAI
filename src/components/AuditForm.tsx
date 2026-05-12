@@ -2,24 +2,23 @@
 
 import { useAuditForm } from '@/hooks/useAuditForm'
 import { BUDGETS, USE_CASES } from '@/utils/auditForm/constants'
-import { LoadingState, SuccessState } from './AuditFormStates'
+import { LoadingState, ErrorState } from './AuditFormStates'
 import { FieldLabel, Input, Select, Textarea } from './AuditFormFields'
 import ToolRow from './ToolRow'
 
 export default function AuditForm() {
   const {
-    mounted, submitted, loading, progress, data,
-    saveStatus, lastSaved, estimatedSavings,
+    loading, progress, data, error,
+    saveStatus, lastSaved,
     update, updateTool, addTool, removeTool,
-    handleSubmit, setSubmitted,
+    handleSubmit,
   } = useAuditForm()
 
-  if (!mounted)   return null
-  if (loading)    return <LoadingState progress={progress} />
-  if (submitted)  return <SuccessState estimatedSavings={estimatedSavings} onReset={() => setSubmitted(false)} />
+  if (loading) return <LoadingState progress={progress} />
+  if (error) return <ErrorState message={error} />
 
   return (
-    <div className="w-full max-w-3xl mx-auto rounded-[32px] border border-white/60 bg-white/90 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-[0_20px_80px_rgba(15,23,42,0.08)]">
+    <div className="w-full max-w-3xl mx-auto rounded-4xl border border-white/60 bg-white/90 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-[0_20px_80px_rgba(15,23,42,0.08)]">
 
       <div className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand mb-2">AI Spend Audit</p>

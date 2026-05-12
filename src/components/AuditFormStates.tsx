@@ -1,3 +1,25 @@
+export function ErrorState({
+  message,
+}: {
+  message: string
+}) {
+  return (
+    <div className={CARD}>
+      <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-2xl mx-auto mb-6">⚠</div>
+      <h2 className="text-3xl font-bold text-slate-950 mb-3">Audit Failed</h2>
+      <div className="text-slate-500 max-w-md mx-auto leading-relaxed mb-6 whitespace-pre-wrap text-left bg-red-50 rounded-lg p-4">
+        {message}
+      </div>
+      <button
+        onClick={() => window.location.href='/#features'}
+        className="rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(16,185,129,0.22)]"
+      >
+        Try Again
+      </button>
+    </div>
+  )
+}
+
 const CARD = 'w-full max-w-3xl mx-auto rounded-[32px] border border-white/60 bg-white/90 backdrop-blur-2xl p-10 text-center shadow-[0_20px_80px_rgba(15,23,42,0.08)]'
 
 export function LoadingState({ progress }: { progress: number }) {
@@ -19,9 +41,11 @@ export function LoadingState({ progress }: { progress: number }) {
 
 export function SuccessState({
   estimatedSavings,
+  audit_id,
   onReset,
 }: {
   estimatedSavings: number
+  audit_id: string
   onReset: () => void
 }) {
   return (
@@ -36,9 +60,11 @@ export function SuccessState({
         <p className="text-5xl font-bold text-brand">${estimatedSavings}</p>
       </div>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <button className="rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(16,185,129,0.22)]">
-          View Full Report
-        </button>
+        <a href={`/report/${audit_id}`}>
+          <button className="rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(16,185,129,0.22)]">
+            View Full Report
+          </button>
+        </a>
         <button
           onClick={onReset}
           className="rounded-full border border-slate-200 px-7 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all"

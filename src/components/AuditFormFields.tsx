@@ -6,11 +6,12 @@ export function FieldLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function Input({ value, onChange, placeholder, type = 'text' }: {
+export function Input({ value, onChange, placeholder, type = 'text', disabled = false }: {
   value: string
   onChange: (v: string) => void
   placeholder?: string
   type?: string
+  disabled?: boolean
 }) {
   return (
     <input
@@ -18,23 +19,33 @@ export function Input({ value, onChange, placeholder, type = 'text' }: {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
+      disabled={disabled}
+      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 disabled:opacity-50 disabled:cursor-not-allowed"
     />
   )
 }
 
-export function Select({ value, onChange, options }: {
+export function Select({
+  value,
+  onChange,
+  options,
+  disabled = false,
+  placeholder = 'Select option',
+}: {
   value: string
   onChange: (v: string) => void
   options: string[]
+  disabled?: boolean
+  placeholder?: string
 }) {
   return (
     <select
       value={value}
+      disabled={disabled}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
+      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <option value="">Select option</option>
+      <option value="">{placeholder}</option>
       {options.map((opt) => (
         <option key={opt} value={opt}>{opt}</option>
       ))}
