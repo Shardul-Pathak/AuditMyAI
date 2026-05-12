@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 15
 
     env:
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/auditmyai"
+      SUPABASE_URL: "postgresql://postgres:postgres@localhost:5432/auditmyai"
 
     steps:
       - name: Checkout repository
