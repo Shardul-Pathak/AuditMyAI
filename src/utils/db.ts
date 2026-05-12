@@ -6,10 +6,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const rawDatabaseUrl = process.env.DATABASE_URL;
+const rawDatabaseUrl = process.env.DATABASE_URL ?? process.env.SUPABASE_URL;
 
 if (!rawDatabaseUrl) {
-  throw new Error("DATABASE_URL is not set");
+  throw new Error(
+    "DATABASE_URL or SUPABASE_URL must be set (Prisma CLI accepts either; runtime DB uses the same resolution)."
+  );
 }
 
 function normalizeConnectionString(urlString: string): string {

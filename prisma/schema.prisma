@@ -8,23 +8,33 @@ datasource db {
 
 model AuditReport {
   id                  String      @id @default(cuid())
-  publicId            String      @unique @default(cuid())
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
-  totalMonthlySpend   Decimal     @db.Decimal(10, 2)
-  totalMonthlySavings Decimal     @db.Decimal(10, 2)
-  totalAnnualSavings  Decimal     @db.Decimal(10, 2)
-  teamSize            Int         @default(1)
-  primaryUseCase      UseCase     @default(MIXED)
+  toolAnalysis        Json?
+  /// Legacy NOT NULL column in DB (quoted `"auditId"`). Same value as `publicId` / lead API `auditId`.
+  auditId             String
+  publicId            String      @unique @default(cuid()) @map("public_id")
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+  totalMonthlySpend   Decimal     @db.Decimal(10, 2) @map("total_monthly_spend")
+  totalMonthlySavings Decimal     @db.Decimal(10, 2) @map("total_monthly_savings")
+  totalAnnualSavings  Decimal     @db.Decimal(10, 2) @map("total_annual_savings")
+  /// Legacy NOT NULL column in DB (quoted `"projectedSavings"`). Modeled monthly savings; mirrors `totalMonthlySavings`.
+  projectedSavings    Decimal     @db.Decimal(10, 2)
+  teamSize            Int         @default(1) @map("team_size")
+  primaryUseCase      UseCase     @default(MIXED) @map("primary_use_case")
   summary             String
-  auditScore          Int
-  leadId              String?
-  adobePdfUrl         String?
+  /// Legacy NOT NULL denormalized column in DB (quoted `"executiveSummary"`). Kept in sync with Groq `executiveSummary` / `summary`.
+  executiveSummary    String
+  /// Legacy NOT NULL column in DB (quoted `"optimizationScore"`). Kept in sync with `auditScore`.
+  optimizationScore   Int
+  auditScore          Int         @map("audit_score")
+  leadId              String?     @map("lead_id")
+  adobePdfUrl         String?     @map("adobe_pdf_url")
   auditItems          AuditItem[]
   lead                Lead?       @relation(fields: [leadId], references: [id])
-  generatedReport     Json
+  /// Legacy NOT NULL JSON in DB (denormalized per-tool recommendations). JSON array mirroring audit line items at save time.
+  recommendations     Json
+  generatedReport     Json        @map("generated_report")
 
-  @@index([publicId])
   @@index([createdAt])
   @@index([leadId])
   @@index([auditScore])
@@ -32,18 +42,18 @@ model AuditReport {
 
 model AuditItem {
   id                     String             @id @default(cuid())
-  createdAt              DateTime           @default(now())
-  toolName               AiTool
-  currentPlan            PlanTier
-  recommendedPlan        PlanTier
-  currentMonthlyCost     Decimal            @db.Decimal(10, 2)
-  recommendedMonthlyCost Decimal            @db.Decimal(10, 2)
-  monthlySavings         Decimal            @db.Decimal(10, 2)
-  annualSavings          Decimal            @db.Decimal(10, 2)
-  recommendationType     RecommendationType
+  createdAt              DateTime           @default(now()) @map("created_at")
+  toolName               AiTool             @map("tool_name")
+  currentPlan            PlanTier           @map("current_plan")
+  recommendedPlan        PlanTier           @map("recommended_plan")
+  currentMonthlyCost     Decimal            @db.Decimal(10, 2) @map("current_monthly_cost")
+  recommendedMonthlyCost Decimal            @db.Decimal(10, 2) @map("recommended_monthly_cost")
+  monthlySavings         Decimal            @db.Decimal(10, 2) @map("monthly_savings")
+  annualSavings          Decimal            @db.Decimal(10, 2) @map("annual_savings")
+  recommendationType     RecommendationType @map("recommendation_type")
   reasoning              String
-  confidenceScore        Float
-  reportId               String
+  confidenceScore        Float              @map("confidence_score")
+  reportId               String             @map("report_id")
   report                 AuditReport        @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@index([reportId])
@@ -52,13 +62,16 @@ model AuditItem {
 }
 
 model Lead {
-  id                String        @id @default(cuid())
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  email             String        @unique
-  companyName       String?
+  id                String           @id @default(cuid())
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  email             String           @unique
+  companyName       String?          @map("company_name")
+  firstName         String?          @map("first_name")
+  lastName          String?          @map("last_name")
+  companySize       LeadCompanySize? @map("company_size")
   role              String?
-  estimatedTeamSize Int?
+  estimatedTeamSize Int?             @map("estimated_team_size")
   reports           AuditReport[]
 
   @@index([email])
@@ -67,13 +80,13 @@ model Lead {
 
 model PricingSnapshot {
   id           String      @id @default(cuid())
-  createdAt    DateTime    @default(now())
+  createdAt    DateTime    @default(now()) @map("created_at")
   vendor       AiTool
   plan         PlanTier
-  monthlyPrice Decimal     @db.Decimal(10, 4)
-  pricingUnit  PricingUnit
-  sourceUrl    String?
-  verifiedAt   DateTime
+  monthlyPrice Decimal     @db.Decimal(10, 4) @map("monthly_price")
+  pricingUnit  PricingUnit @map("pricing_unit")
+  sourceUrl    String?     @map("source_url")
+  verifiedAt   DateTime    @map("verified_at")
 
   @@unique([vendor, plan, verifiedAt])
   @@index([vendor, plan])
@@ -82,8 +95,8 @@ model PricingSnapshot {
 
 model RateLimitEvent {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  ipHash    String
+  createdAt DateTime @default(now()) @map("created_at")
+  ipHash    String   @map("ip_hash")
   endpoint  String
 
   @@index([ipHash, endpoint, createdAt])
@@ -138,4 +151,11 @@ enum UseCase {
   RESEARCH
   GENERAL_PRODUCTIVITY
   MIXED
+}
+
+enum LeadCompanySize {
+  ONE
+  TWO_TO_TEN
+  ELEVEN_TO_FIFTY
+  FIFTY_PLUS
 }
