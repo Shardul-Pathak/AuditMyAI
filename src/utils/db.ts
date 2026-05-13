@@ -6,15 +6,17 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const connectionString = process.env.DATABASE_URL;
+const rawDatabaseUrl = process.env.DATABASE_URL ?? process.env.SUPABASE_URL;
 
-if (!connectionString) {
-  throw new Error("DATABASE_URL is missing");
+if (!rawDatabaseUrl) {
+  throw new Error(
+    "DATABASE_URL or SUPABASE_URL must be set (Prisma CLI accepts either; runtime DB uses the same resolution)."
+  );
 }
 
 const adapter = new PrismaPg(
   new Pool({
-    connectionString
+    connectionString: rawDatabaseUrl,
   })
 );
 
@@ -24,8 +26,8 @@ export const db =
     adapter,
     log:
       process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+        ? (["query", "error", "warn"] as const)
+        : (["error"] as const),
   });
 
 if (process.env.NODE_ENV !== "production") {
