@@ -17,6 +17,9 @@ if (!rawDatabaseUrl) {
 const adapter = new PrismaPg(
   new Pool({
     connectionString: rawDatabaseUrl,
+    ssl: process.env.NODE_ENV === "production" 
+      ? { rejectUnauthorized: false }
+      : false,
   })
 );
 
