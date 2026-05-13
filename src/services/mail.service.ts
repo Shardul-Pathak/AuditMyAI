@@ -46,6 +46,7 @@ export async function sendLeadReportEmail(params: {
     <p>Hi ${greeting},</p>
     <p>Thanks for requesting your audit report. Your personalized PDF is attached, and you can always view the live report here:</p>
     <p><a href="${reportUrl}">${reportUrl}</a></p>
+    <p>Powered by Credex — <a href="https://credex.rocks">credex.rocks</a></p>
     <p>— AuditMyAI</p>
   `;
 
