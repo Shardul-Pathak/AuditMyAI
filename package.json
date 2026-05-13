@@ -17,8 +17,7 @@
   "dependencies": {
     "@adobe/pdfservices-node-sdk": "^4.1.0",
     "@anthropic-ai/sdk": "^0.95.2",
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "^6.19.3",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "dotenv": "^17.4.2",
@@ -26,6 +25,7 @@
     "lucide-react": "^1.14.0",
     "next": "16.2.5",
     "pg": "^8.20.0",
+    "prisma": "^6.19.3",
     "puppeteer": "^24.43.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -42,7 +42,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.5",
     "jsdom": "^29.1.1",
-    "prisma": "^7.8.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.5"
