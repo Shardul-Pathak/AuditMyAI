@@ -8,13 +8,7 @@ AuditMyAI is a free web app that audits your team's AI tool spend in minutes —
 
 ## Screenshots / Demo
 
-> _Add 3+ screenshots or a 30-second Loom/YouTube recording here._
->
-> Suggested screenshots:
-> 1. Landing page hero section
-> 2. Spend input form with tools filled in
-> 3. Audit results page showing savings breakdown
-> 4. Lead capture / email gate modal
+**Watch a walkthrough:** https://www.loom.com/share/ed67aee74d2a4ff2980f7620e3365534
 
 ---
 
@@ -22,7 +16,7 @@ AuditMyAI is a free web app that audits your team's AI tool spend in minutes —
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 16+
 - pnpm (`npm install -g pnpm`)
 - PostgreSQL database (local or hosted — Supabase / Neon / Render recommended)
 - Groq API key (for AI-generated summaries — get one free at console.groq.com)

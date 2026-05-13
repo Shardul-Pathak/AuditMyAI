@@ -4,22 +4,21 @@
 
 ```mermaid
 flowchart TD
-    A[User Browser] -->|Fills spend form| B[Next.js Frontend\nApp Router - RSC]
-    B -->|Persists state| C[localStorage\nform state]
-    B -->|POST /api/audit| D[Audit Engine\nserver action]
-    D -->|Hardcoded rule set| E[Pricing Rules\nPRICING_DATA.md]
-    D -->|Saves audit record| F[(Postgres\nvia Prisma)]
-    D -->|Returns audit result| B
-    B -->|Renders results| G[Results Page\n/audit/[id]]
-    G -->|POST /api/summary| H[LLM Summary API]
-    H -->|Primary| I[Groq API\nLlama-3-70b]
-    H -->|Fallback on error| J[Groq API\nLlama-3-8b-instant]
-    H -->|Fallback on both fail| K[Template string]
-    G -->|Email gate click| L[POST /api/leads]
-    L -->|Upsert lead + send email| F
-    L -->|Transactional email| M[Resend API]
-    G -->|Unique shareable URL| N[Public audit page\n/share/[token]]
-    N -->|Strips PII, renders OG tags| O[Open Graph Preview\nTwitter Card]
+    A["User Browser"] -->|"Fills spend form"| B["Next.js Frontend - App Router"]
+    B -->|"Persists state"| C["localStorage - form state"]
+    B -->|"POST /api/audit"| D["Audit Engine - Server Action"]
+    D -->|"Hardcoded rule set"| E["Pricing Rules - PRICING_DATA.md"]
+    D -->|"Saves audit record"| F[("Postgres via Prisma")]
+    D -->|"Returns audit result"| B
+    B -->|"Renders results"| G["Results Page - /audit/id"]
+    G -->|"POST /api/summary"| H["LLM Summary API"]
+    H -->|"Primary"| I["Groq API - Llama-3-70b"]
+    H -->|"Fallback on error"| J["Template String"]
+    G -->|"Email gate click"| L["POST /api/leads"]
+    L -->|"Upsert lead + send email"| F
+    L -->|"Transactional email"| M["Resend API"]
+    G -->|"Unique shareable URL"| N["Public Audit Page - /share/token"]
+    N -->|"Strips PII, renders OG tags"| O["Open Graph Preview - Twitter Card"]
 ```
 
 ---
@@ -40,7 +39,7 @@ flowchart TD
 
 5. **The results page renders server-side.** Open Graph `<meta>` tags are injected using Next.js Metadata API, keyed to the audit ID. This means every unique shareable URL gets its own preview card showing the savings headline.
 
-6. **AI summary is generated async.** After the page renders, the client fires a request to `/api/summary`. The prompt (see `PROMPTS.md`) is sent to `claude-sonnet-4-20250514`. On error, Groq is tried. On second error, a template string is returned. The summary appears in a skeleton-loading state until resolved.
+6. **AI summary is generated async.** After the page renders, the client fires a request to `/api/summary`. The prompt (see `PROMPTS.md`) is sent to Groq (`llama-3-70b-8192`). On API failure, a deterministic template string is returned. The summary appears in a skeleton-loading state until resolved.
 
 7. **Lead capture.** After seeing results, the user can optionally enter email + company + role. This fires `/api/leads`, which upserts the record and triggers a Resend transactional email. For audits showing >$500/mo savings, the Credex CTA is surfaced prominently in the email.
 
