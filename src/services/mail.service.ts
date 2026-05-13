@@ -1,9 +1,6 @@
 import { Resend } from "resend";
 
 function publicAppOrigin(): string {
-  const explicit = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
-  if (explicit) return explicit;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "https://audit-my-ai.vercel.app";
 }
 
