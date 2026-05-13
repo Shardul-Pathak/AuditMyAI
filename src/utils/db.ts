@@ -17,7 +17,10 @@ if (!rawDatabaseUrl) {
 const adapter = new PrismaPg(
   new Pool({
     connectionString: rawDatabaseUrl,
-    ssl: { rejectUnauthorized: false },
+    ssl: {
+      rejectUnauthorized: false,
+      checkServerIdentity: () => undefined,
+    },
   })
 );
 
