@@ -1,10 +1,7 @@
 {
   "functions": {
     "app/api/**": {
-      "includeFiles": [
-        "node_modules/@sparticuz/chromium/**",
-        "node_modules/.pnpm/**/node_modules/@sparticuz/chromium/**"
-      ]
+      "includeFiles": "node_modules/.pnpm/**/node_modules/@sparticuz/chromium/**"
     }
   }
 }
