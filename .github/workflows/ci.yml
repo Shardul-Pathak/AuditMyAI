@@ -25,6 +25,7 @@ jobs:
 
     env:
       SUPABASE_URL: "postgresql://postgres:postgres@localhost:5432/auditmyai"
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/auditmyai"
 
     steps:
       - name: Checkout repository
