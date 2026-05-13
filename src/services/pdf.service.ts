@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import puppeteer from "puppeteer-core";
 import chromium from "@sparticuz/chromium";
 import type { GeneratedReportContent } from "@/utils/report/types";

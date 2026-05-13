@@ -15,9 +15,9 @@ model AuditReport {
   publicId            String      @unique @default(cuid()) @map("public_id")
   createdAt           DateTime    @default(now()) @map("created_at")
   updatedAt           DateTime    @updatedAt @map("updated_at")
-  totalMonthlySpend   Decimal     @db.Decimal(10, 2) @map("total_monthly_spend")
-  totalMonthlySavings Decimal     @db.Decimal(10, 2) @map("total_monthly_savings")
-  totalAnnualSavings  Decimal     @db.Decimal(10, 2) @map("total_annual_savings")
+  totalMonthlySpend   Decimal     @map("total_monthly_spend") @db.Decimal(10, 2)
+  totalMonthlySavings Decimal     @map("total_monthly_savings") @db.Decimal(10, 2)
+  totalAnnualSavings  Decimal     @map("total_annual_savings") @db.Decimal(10, 2)
   /// Legacy NOT NULL column in DB (quoted `"projectedSavings"`). Modeled monthly savings; mirrors `totalMonthlySavings`.
   projectedSavings    Decimal     @db.Decimal(10, 2)
   teamSize            Int         @default(1) @map("team_size")
@@ -30,11 +30,11 @@ model AuditReport {
   auditScore          Int         @map("audit_score")
   leadId              String?     @map("lead_id")
   adobePdfUrl         String?     @map("adobe_pdf_url")
-  auditItems          AuditItem[]
-  lead                Lead?       @relation(fields: [leadId], references: [id])
   /// Legacy NOT NULL JSON in DB (denormalized per-tool recommendations). JSON array mirroring audit line items at save time.
   recommendations     Json
   generatedReport     Json        @map("generated_report")
+  auditItems          AuditItem[]
+  lead                Lead?       @relation(fields: [leadId], references: [id])
 
   @@index([createdAt])
   @@index([leadId])
@@ -47,10 +47,10 @@ model AuditItem {
   toolName               AiTool             @map("tool_name")
   currentPlan            PlanTier           @map("current_plan")
   recommendedPlan        PlanTier           @map("recommended_plan")
-  currentMonthlyCost     Decimal            @db.Decimal(10, 2) @map("current_monthly_cost")
-  recommendedMonthlyCost Decimal            @db.Decimal(10, 2) @map("recommended_monthly_cost")
-  monthlySavings         Decimal            @db.Decimal(10, 2) @map("monthly_savings")
-  annualSavings          Decimal            @db.Decimal(10, 2) @map("annual_savings")
+  currentMonthlyCost     Decimal            @map("current_monthly_cost") @db.Decimal(10, 2)
+  recommendedMonthlyCost Decimal            @map("recommended_monthly_cost") @db.Decimal(10, 2)
+  monthlySavings         Decimal            @map("monthly_savings") @db.Decimal(10, 2)
+  annualSavings          Decimal            @map("annual_savings") @db.Decimal(10, 2)
   recommendationType     RecommendationType @map("recommendation_type")
   reasoning              String
   confidenceScore        Float              @map("confidence_score")
@@ -84,7 +84,7 @@ model PricingSnapshot {
   createdAt    DateTime    @default(now()) @map("created_at")
   vendor       AiTool
   plan         PlanTier
-  monthlyPrice Decimal     @db.Decimal(10, 4) @map("monthly_price")
+  monthlyPrice Decimal     @map("monthly_price") @db.Decimal(10, 4)
   pricingUnit  PricingUnit @map("pricing_unit")
   sourceUrl    String?     @map("source_url")
   verifiedAt   DateTime    @map("verified_at")
