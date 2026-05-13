@@ -2,6 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
+// Bypass self-signed certificate validation for development/staging environments
+if (process.env.NODE_ENV !== "production") {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
@@ -17,10 +22,10 @@ if (!rawDatabaseUrl) {
 const adapter = new PrismaPg(
   new Pool({
     connectionString: rawDatabaseUrl,
-    ssl: {
-      rejectUnauthorized: false,
-      checkServerIdentity: () => undefined,
-    },
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? { rejectUnauthorized: false, checkServerIdentity: () => undefined }
+        : true,
   })
 );
 
